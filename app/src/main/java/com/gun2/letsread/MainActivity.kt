@@ -1,39 +1,28 @@
 package com.gun2.letsread
 
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.gun2.letsread.ui.theme.LetsReadTheme
+import androidx.compose.ui.Alignment
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
         setContent {
-            LetsReadTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    TestLayout(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            MaterialTheme {
+                Surface {
+                    HomeScreen()
                 }
             }
         }
@@ -41,28 +30,74 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TestLayout(name: String, modifier: Modifier = Modifier) {
-    Row(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(modifier = Modifier.fillMaxHeight().width(100.dp).background(Color.Yellow)) {
-            Text(text = "Column 1")
+fun HomeScreen() {
+    var selectedTab by remember { mutableStateOf(0) }
+    val tabs = listOf("Home", "Books", "Profile", "Theme")
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                tabs.forEachIndexed { index, title ->
+                    NavigationBarItem(
+                        icon = {
+                            when (title) {
+                                "Home" -> Icon(Icons.Filled.Home, contentDescription = "Home")
+                                "Books" -> Image(
+                                    painter = painterResource(id = R.drawable.books),
+                                    contentDescription = "Books Icon",
+                                    //modifier = Modifier.size(24.dp)
+                                )
+                                "Profile" -> Icon(Icons.Filled.Person, contentDescription = "Profile")
+                                "Theme" -> Image(
+                                    painter = painterResource(id = R.drawable.palette),
+                                    contentDescription = "Theme Icon",
+                                    //modifier = Modifier.size(24.dp)
+                                )
+                                else -> Icon(Icons.Filled.Home, contentDescription = null)
+                            }
+                        },
+                        label = { Text(title) },
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index }
+                    )
+                }
+            }
         }
-        Column(modifier = Modifier.fillMaxHeight().width(100.dp).background(Color.Gray)) {
-            Text(text = "Column 2")
-        }
-        Column(modifier = Modifier.fillMaxHeight().fillMaxWidth().background(Color.Green),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Column 3")
+    ) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "App Logo",
+                    modifier = Modifier.size(96.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                when (selectedTab) {
+                    0 -> Text("Home Screen")
+                    1 -> Text("Books Screen")
+                    2 -> Text("Profile Screen")
+                    3 -> Text("Theme Screen")
+                }
+            }
         }
     }
 }
-//  testing git
+
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    LetsReadTheme {
-        TestLayout("Android")
+fun HomeScreenPreview() {
+    MaterialTheme {
+        Surface {
+            HomeScreen()
+        }
     }
 }

@@ -36,7 +36,13 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
+    dependenciesInfo {
+        includeInApk = true
+        includeInBundle = true
+    }
+    buildToolsVersion = "36.0.0"
 }
 
 dependencies {
